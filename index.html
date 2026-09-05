@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Cognition — Logic &amp; Pattern Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #10121A;
+    --panel: #191C28;
+    --panel-raised: #20243370;
+    --line: #2C3042;
+    --text: #ECEEF5;
+    --muted: #8B90A3;
+    --amber: #F2B84B;
+    --amber-dim: #F2B84B33;
+    --teal: #5DC9B6;
+    --coral: #E8735F;
+    --radius: 3px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Work Sans', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    max-width:640px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:0 24px;
+  }
+  .brand{
+    padding:28px 0 8px 0;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .brand-mark{
+    width:10px;height:10px;
+    background:var(--amber);
+    flex-shrink:0;
+  }
+  .brand-name{
+    font-family:'Newsreader', serif;
+    font-size:19px;
+    letter-spacing:0.02em;
+  }
+
+  /* ---------- Screens ---------- */
+  .screen{display:none; flex:1; flex-direction:column;}
+  .screen.active{display:flex;}
+
+  /* Welcome */
+  #welcome{justify-content:center; padding-bottom:60px;}
+  .hero-num{
+    font-family:'Newsreader', serif;
+    font-style:italic;
+    font-size:96px;
+    line-height:0.9;
+    font-weight:400;
+    color:var(--amber);
+    margin:0 0 4px -4px;
+  }
+  .hero-title{
+    font-family:'Newsreader', serif;
+    font-size:34px;
+    font-weight:500;
+    line-height:1.15;
+    margin:0 0 18px 0;
+    max-width:420px;
+  }
+  .hero-sub{
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.6;
+    max-width:440px;
+    margin:0 0 32px 0;
+  }
+  .meta-row{
+    display:flex;
+    gap:28px;
+    margin-bottom:36px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+  }
+  .meta-item{}
+  .meta-item .n{font-family:'Newsreader', serif; font-size:22px; color:var(--text);}
+  .meta-item .l{font-size:12px; color:var(--muted); margin-top:2px;}
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:var(--amber);
+    color:#1A1200;
+    border:none;
+    font-family:'Work Sans', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    padding:15px 26px;
+    cursor:pointer;
+    border-radius:var(--radius);
+    transition:transform .15s ease, background .15s ease;
+    width:fit-content;
+  }
+  .btn:hover{background:#F6C767;}
+  .btn:active{transform:scale(0.98);}
+  .btn.ghost{
+    background:transparent;
+    color:var(--text);
+    border:1px solid var(--line);
+  }
+  .btn.ghost:hover{border-color:var(--muted); background:var(--panel);}
+
+  .disclaimer{
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.6;
+    margin-top:auto;
+    padding:20px 0 28px 0;
+    border-top:1px solid var(--line);
+  }
+
+  /* Quiz */
+  #quiz{padding-top:18px;}
+  .progress-wrap{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:34px;
+  }
+  .progress-track{
+    flex:1;
+    height:2px;
+    background:var(--line);
+    position:relative;
+  }
+  .progress-fill{
+    position:absolute; top:0; left:0; height:100%;
+    background:var(--amber);
+    transition:width .35s ease;
+  }
+  .progress-label{
+    font-size:13px;
+    color:var(--muted);
+    white-space:nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .cat-tag{
+    font-size:12px;
+    color:var(--amber);
+    margin-bottom:14px;
+  }
+  .q-text{
+    font-family:'Newsreader', serif;
+    font-size:26px;
+    line-height:1.35;
+    font-weight:500;
+    margin:0 0 8px 0;
+  }
+  .q-shape{
+    font-size:34px;
+    letter-spacing:10px;
+    margin:18px 0 6px 0;
+    color:var(--text);
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:26px;
+  }
+  .opt{
+    text-align:left;
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:16px 18px;
+    font-family:'Work Sans', sans-serif;
+    font-size:15px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border-radius:var(--radius);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .opt:hover{border-color:var(--muted);}
+  .opt .k{
+    color:var(--muted);
+    font-size:12px;
+    width:16px;
+    flex-shrink:0;
+  }
+  .opt.correct{border-color:var(--teal); background:#5DC9B61A;}
+  .opt.wrong{border-color:var(--coral); background:#E8735F1A;}
+  .opt.disabled{pointer-events:none;}
+
+  .next-hint{
+    margin-top:22px;
+    font-size:13px;
+    color:var(--muted);
+    height:18px;
+  }
+
+  /* Results */
+  #results{padding-top:24px;}
+  .score-block{
+    display:flex;
+    align-items:flex-end;
+    gap:18px;
+    padding-bottom:24px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:26px;
+  }
+  .score-num{
+    font-family:'Newsreader', serif;
+    font-style:italic;
+    font-size:88px;
+    line-height:0.85;
+    color:var(--amber);
+  }
+  .score-copy{padding-bottom:6px;}
+  .score-copy .band{font-size:16px; font-weight:600; margin-bottom:4px;}
+  .score-copy .pct{font-size:13px; color:var(--muted);}
+
+  .cat-breakdown{margin-bottom:30px;}
+  .cat-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:11px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .cat-row .cname{width:130px; font-size:14px; flex-shrink:0;}
+  .cat-row .cbar{flex:1; height:6px; background:var(--panel); position:relative;}
+  .cat-row .cbar-fill{position:absolute; top:0; left:0; height:100%; background:var(--teal);}
+  .cat-row .cval{font-size:13px; color:var(--muted); width:44px; text-align:right; font-variant-numeric: tabular-nums;}
+
+  .result-actions{display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;}
+
+  footer.foot{
+    font-size:12px;
+    color:var(--muted);
+    padding:20px 0 30px 0;
+    line-height:1.6;
+  }
+
+  @media (max-width:420px){
+    .hero-num{font-size:72px;}
+    .hero-title{font-size:27px;}
+    .q-text{font-size:22px;}
+    .score-num{font-size:66px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="brand">
+    <div class="brand-mark"></div>
+    <div class="brand-name">Cognition</div>
+  </div>
+
+  <!-- WELCOME -->
+  <section id="welcome" class="screen active">
+    <div class="hero-num">24</div>
+    <h1 class="hero-title">A short test of reasoning, pattern, number and word.</h1>
+    <p class="hero-sub">Twenty-four questions across four categories. No two people finish it the same way — answer at your own pace, there's no clock.</p>
+
+    <div class="meta-row">
+      <div class="meta-item"><div class="n">24</div><div class="l">questions</div></div>
+      <div class="meta-item"><div class="n">4</div><div class="l">categories</div></div>
+      <div class="meta-item"><div class="n">~8</div><div class="l">minutes</div></div>
+    </div>
+
+    <button class="btn" id="startBtn">Begin test</button>
+
+    <div class="disclaimer">
+      This is a self-assessment game for entertainment and casual practice — it is not a clinical or professionally validated intelligence test, and results shouldn't be used for diagnostic, academic, employment, or medical decisions.
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="screen">
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
+      <div class="progress-label" id="progLabel">1 / 24</div>
+    </div>
+    <div class="cat-tag" id="catTag">LOGICAL REASONING</div>
+    <div class="q-text" id="qText"></div>
+    <div class="q-shape" id="qShape" style="display:none;"></div>
+    <div class="options" id="optsWrap"></div>
+    <div class="next-hint" id="nextHint"></div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="screen">
+    <div class="score-block">
+      <div class="score-num" id="scoreNum">100</div>
+      <div class="score-copy">
+        <div class="band" id="scoreBand">Solid reasoning</div>
+        <div class="pct" id="scorePct">Ahead of 50% of test takers</div>
+      </div>
+    </div>
+
+    <div class="cat-breakdown" id="catBreakdown"></div>
+
+    <div class="result-actions">
+      <button class="btn" id="retakeBtn">Take again</button>
+      <button class="btn ghost" id="shareBtn">Copy result</button>
+    </div>
+
+    <footer class="foot">
+      Score is a game-internal composite scaled for fun (mean 100, spread 15) — treat it as a snapshot of one short session, not a measurement of intelligence.
+    </footer>
+  </section>
+
+</div>
+
+<script>
+(function(){
+
+  // ---------------- Question bank ----------------
+  const QUESTIONS = [
+    // Logical reasoning
+    {cat:"Logical Reasoning", text:"All Merrow are Talven. All Talven are Bexi. What follows?",
+     opts:["All Merrow are Bexi","All Bexi are Merrow","No Merrow are Bexi","Cannot be determined"], answer:0},
+    {cat:"Logical Reasoning", text:"If it rains, the courtyard floods. The courtyard is flooded. What can you conclude?",
+     opts:["It rained","It did not rain","It may or may not have rained","It never rains here"], answer:2},
+    {cat:"Logical Reasoning", text:"No otters are reptiles. Some pets are otters. What follows?",
+     opts:["All pets are reptiles","Some pets are not reptiles","No pets are reptiles","All reptiles are pets"], answer:1},
+    {cat:"Logical Reasoning", text:"Priya is taller than Sam. Tomas is shorter than Sam. Who is tallest?",
+     opts:["Priya","Sam","Tomas","Cannot be determined"], answer:0},
+    {cat:"Logical Reasoning", text:"Some Doffins are Reeza. All Reeza are Kalmi. What follows?",
+     opts:["All Doffins are Kalmi","Some Doffins are Kalmi","No Doffins are Kalmi","All Kalmi are Doffins"], answer:1},
+    {cat:"Logical Reasoning", text:"Which day continues the sequence? Monday, Wednesday, Friday, ___",
+     opts:["Saturday","Sunday","Monday","Thursday"], answer:1},
+    // Numerical
+    {cat:"Numerical", text:"What number continues the sequence? 2, 4, 8, 16, ___",
+     opts:["20","24","32","30"], answer:2},
+    {cat:"Numerical", text:"What number continues the sequence? 1, 1, 2, 3, 5, 8, ___",
+     opts:["11","12","13","14"], answer:2},
+    {cat:"Numerical", text:"Five machines make five parts in five minutes. How long would 100 machines take to make 100 parts?",
+     opts:["100 minutes","20 minutes","5 minutes","1 minute"], answer:2},
+    {cat:"Numerical", text:"What number continues the sequence? 7, 14, 28, 56, ___",
+     opts:["84","102","112","98"], answer:2},
+    {cat:"Numerical", text:"Which number is missing? 10, 20, ___, 40, 50",
+     opts:["25","30","35","28"], answer:1},
+    {cat:"Numerical", text:"Half of 250, plus 25, equals?",
+     opts:["125","150","140","160"], answer:1},
+    // Verbal
+    {cat:"Verbal", text:"Book is to Reading as Fork is to ___?",
+     opts:["Kitchen","Eating","Metal","Plate"], answer:1},
+    {cat:"Verbal", text:"Bird is to Sky as Fish is to ___?",
+     opts:["Water","Scales","Fins","Boat"], answer:0},
+    {cat:"Verbal", text:"Doctor is to Hospital as Teacher is to ___?",
+     opts:["Book","Student","School","Lesson"], answer:2},
+    {cat:"Verbal", text:"Hot is to Cold as Up is to ___?",
+     opts:["Sideways","Down","High","Over"], answer:1},
+    {cat:"Verbal", text:"Pen is to Write as Scissors is to ___?",
+     opts:["Sharp","Paper","Cut","Craft"], answer:2},
+    {cat:"Verbal", text:"Puppy is to Dog as Kitten is to ___?",
+     opts:["Cat","Feline","Litter","Paw"], answer:0},
+    // Spatial / Pattern
+    {cat:"Spatial Pattern", text:"Which shape continues the pattern?", shape:"▲  ▲▲  ▲▲▲  ▲▲▲▲",
+     opts:["▲▲","▲▲▲▲▲","▲▲▲","●●●●●"], answer:1},
+    {cat:"Spatial Pattern", text:"Which shape continues the pattern?", shape:"●  ○  ●  ○  ●",
+     opts:["●","○","◐","■"], answer:1},
+    {cat:"Spatial Pattern", text:"Which shape continues the pattern?", shape:"□  ■  □  ■  □",
+     opts:["□","■","▨","○"], answer:1},
+    {cat:"Spatial Pattern", text:"An arrow pointing up (↑) is rotated 90° clockwise, becoming (→). What does (→) become after the same rotation?",
+     opts:["↑","↓","←","↗"], answer:1},
+    {cat:"Spatial Pattern", text:"The letter \"b\" mirrored becomes \"d\". What does \"p\" mirrored become?",
+     opts:["q","b","d","g"], answer:0},
+    {cat:"Spatial Pattern", text:"Which pattern continues the row? ⬛⬜⬛  ⬜⬛⬜  ⬛⬜⬛  ___",
+     opts:["⬛⬛⬛","⬜⬛⬜","⬛⬜⬛","⬜⬜⬜"], answer:1},
+  ];
+
+  const CATS = ["Logical Reasoning","Numerical","Verbal","Spatial Pattern"];
+
+  // ---------------- State ----------------
+  let order = [];
+  let current = 0;
+  let answers = []; // {correct:bool, cat:string}
+  let advancing = false;
+
+  const $ = id => document.getElementById(id);
+  const screens = { welcome: $('welcome'), quiz: $('quiz'), results: $('results') };
+  function showScreen(name){
+    Object.values(screens).forEach(s=>s.classList.remove('active'));
+    screens[name].classList.add('active');
+  }
+
+  function shuffledIndices(n){
+    const arr = [...Array(n).keys()];
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]] = [arr[j],arr[i]];
+    }
+    return arr;
+  }
+
+  function startTest(){
+    order = shuffledIndices(QUESTIONS.length);
+    current = 0;
+    answers = [];
+    showScreen('quiz');
+    renderQuestion();
+  }
+
+  function renderQuestion(){
+    advancing = false;
+    const q = QUESTIONS[order[current]];
+    $('progLabel').textContent = (current+1) + ' / ' + QUESTIONS.length;
+    $('progFill').style.width = Math.round(((current)/QUESTIONS.length)*100) + '%';
+    $('catTag').textContent = q.cat.toUpperCase();
+    $('qText').textContent = q.text;
+    const shapeEl = $('qShape');
+    if(q.shape){ shapeEl.style.display='block'; shapeEl.textContent = q.shape; }
+    else { shapeEl.style.display='none'; shapeEl.textContent=''; }
+
+    const wrap = $('optsWrap');
+    wrap.innerHTML = '';
+    const letters = ['A','B','C','D'];
+    q.opts.forEach((opt, i)=>{
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.innerHTML = '<span class="k">'+letters[i]+'</span><span>'+opt+'</span>';
+      btn.addEventListener('click', ()=>selectOption(i, btn, q));
+      wrap.appendChild(btn);
+    });
+    $('nextHint').textContent = '';
+  }
+
+  function selectOption(i, btn, q){
+    if(advancing) return;
+    advancing = true;
+    const isCorrect = i === q.answer;
+    const allOpts = $('optsWrap').querySelectorAll('.opt');
+    allOpts.forEach(o=>o.classList.add('disabled'));
+    btn.classList.add(isCorrect ? 'correct' : 'wrong');
+    if(!isCorrect){
+      allOpts[q.answer].classList.add('correct');
+    }
+    answers.push({correct:isCorrect, cat:q.cat});
+    $('nextHint').textContent = current < QUESTIONS.length-1 ? 'Next question…' : 'Calculating result…';
+
+    setTimeout(()=>{
+      current++;
+      if(current < QUESTIONS.length){
+        renderQuestion();
+      } else {
+        $('progFill').style.width = '100%';
+        finishTest();
+      }
+    }, 650);
+  }
+
+  function finishTest(){
+    const correctCount = answers.filter(a=>a.correct).length;
+    const pctCorrect = correctCount / answers.length;
+
+    // Composite score, mean 100 / spread ~15, entertainment-only
+    let score = Math.round(70 + pctCorrect * 75);
+    score = Math.max(70, Math.min(145, score));
+
+    let band, pctText;
+    if(score >= 130){ band = 'Exceptional pattern recognition'; }
+    else if(score >= 118){ band = 'Strong reasoning'; }
+    else if(score >= 105){ band = 'Solid reasoning'; }
+    else if(score >= 92){ band = 'Average range'; }
+    else { band = 'Room to sharpen up'; }
+
+    // rough percentile from a normal curve, mean 100 sd 15
+    const z = (score-100)/15;
+    const percentile = Math.round(normCdf(z)*100);
+    pctText = 'Ahead of ' + Math.max(1, Math.min(99, percentile)) + '% of sessions on this device';
+
+    $('scoreNum').textContent = score;
+    $('scoreBand').textContent = band;
+    $('scorePct').textContent = pctText;
+
+    const catWrap = $('catBreakdown');
+    catWrap.innerHTML = '';
+    CATS.forEach(cat=>{
+      const inCat = answers.filter(a=>a.cat===cat);
+      const correctInCat = inCat.filter(a=>a.correct).length;
+      const pct = inCat.length ? Math.round((correctInCat/inCat.length)*100) : 0;
+      const row = document.createElement('div');
+      row.className = 'cat-row';
+      row.innerHTML = '<div class="cname">'+cat+'</div>'+
+                       '<div class="cbar"><div class="cbar-fill" style="width:'+pct+'%"></div></div>'+
+                       '<div class="cval">'+correctInCat+'/'+inCat.length+'</div>';
+      catWrap.appendChild(row);
+    });
+
+    saveHighScore(score);
+    showScreen('results');
+  }
+
+  function normCdf(z){
+    return 0.5 * (1 + erf(z/Math.sqrt(2)));
+  }
+  function erf(x){
+    const sign = x<0 ? -1 : 1;
+    x = Math.abs(x);
+    const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+    const t = 1/(1+p*x);
+    const y = 1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+    return sign*y;
+  }
+
+  function saveHighScore(score){
+    try{
+      const key = 'cognition_scores';
+      const prev = JSON.parse(localStorage.getItem(key) || '[]');
+      prev.push({score, ts: Date.now()});
+      localStorage.setItem(key, JSON.stringify(prev.slice(-20)));
+    }catch(e){ /* storage unavailable, ignore */ }
+  }
+
+  $('startBtn').addEventListener('click', startTest);
+  $('retakeBtn').addEventListener('click', startTest);
+  $('shareBtn').addEventListener('click', ()=>{
+    const score = $('scoreNum').textContent;
+    const text = 'I scored ' + score + ' on the Cognition logic test.';
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(text).then(()=>{
+        $('shareBtn').textContent = 'Copied';
+        setTimeout(()=>{ $('shareBtn').textContent = 'Copy result'; }, 1500);
+      });
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
